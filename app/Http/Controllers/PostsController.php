@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use Carbon\Carbon;
 
 class PostsController extends Controller
 {
@@ -14,8 +15,10 @@ class PostsController extends Controller
 
     public function index()
     {
-        $posts = Post::latest()->get();
-        return view('posts.index', compact('posts'));
+        $posts = Post::latest()->filter(request(['month', 'year']))->get();
+
+        $archives = Post::archives();
+        return view('posts.index', compact('posts', 'archives'));
     }
 
     public function show(Post $post)
@@ -33,10 +36,13 @@ class PostsController extends Controller
         $this->validate(request(), [
             'title' => 'required',
             'body' => 'required',
-            'user_id' => auth()->id(),
         ]);
 
-        Post::create(request(['title', 'body']));
+        Post::create([
+            'title' => request('title'),
+            'body' => request('body'),
+            'user_id' => auth()->id(),
+        ]);
 
         return redirect('/');
     }
