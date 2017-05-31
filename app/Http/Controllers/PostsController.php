@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Post;
+use App\Tag;
 use Carbon\Carbon;
 
 class PostsController extends Controller
@@ -16,9 +17,10 @@ class PostsController extends Controller
     public function index()
     {
         $posts = Post::latest()->filter(request(['month', 'year']))->get();
+        $tags = Tag::has('posts')->pluck('name');
 
         $archives = Post::archives();
-        return view('posts.index', compact('posts', 'archives'));
+        return view('posts.index', compact('posts', 'archives', 'tags'));
     }
 
     public function show(Post $post)

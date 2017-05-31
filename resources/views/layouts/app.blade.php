@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="col-md-4">
-                @include('layouts.sidebar')
+                @yield('sidebar')
                 </div>
             </div>
         </div>
